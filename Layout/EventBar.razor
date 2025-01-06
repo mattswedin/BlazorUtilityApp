@@ -1,6 +1,43 @@
+@using UtilityBlazorApp.Models
+@inject IJSRuntime JSRuntime
+@inject HttpClient Http
+
 <div class="nav">
-    <h6>site logo</h6>
-    <h6>date</h6>
-    <h6>time</h6>
-    <h6>weather</h6>
+    <i class="ri-star-smile-fill"></i>
+    <h6>@userDateTime</h6>
+    <h6>@userWeather</h6>
 </div>
+
+@code {
+
+    private string userDateTime = "Date and Time Loading!";
+    private string userWeather = "Weather Loading!";
+
+    private async Task GetLocalDateTime()
+    {
+        userDateTime = await JSRuntime.InvokeAsync<string>("getUserDateTime");
+        StateHasChanged();
+    }
+
+    private async Task GetWeather()
+    {
+        
+        string apiKey = "f8bb777f33ea63b9d279cc04b0566773";
+        Location location = await JSRuntime.InvokeAsync<Location>("getLocation");
+        string apiURL = $"https://api.openweathermap.org/data/2.5/weather?lat={location.lat}&lon={location.lon}&appid={apiKey}";
+
+        WeatherDetails weatherObj = await Http.GetFromJsonAsync<WeatherDetails>(apiURL);
+        
+        userWeather = $"Weather: {weatherObj.Weather?.FirstOrDefault().Main ?? "Unknown"}, Temp: {weatherObj.Main?.Temp}";
+        StateHasChanged();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await GetLocalDateTime();
+            await GetWeather();
+        }
+    }
+}

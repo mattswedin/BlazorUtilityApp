@@ -31,3 +31,46 @@
 </body>
 
 </html>
+
+<!-- Javascript Interpol -->
+
+<script>
+
+    //Needs to be defined on the window because JS runs in the browser
+    //Global access
+
+    window.getUserDateTime = function() {
+        const currentDate = new Date();
+        return currentDate.toString();
+    }
+
+    window.getLocation = function() {
+        return new Promise((resolve, reject) => {
+            //can use just navigator as short hand - still is property of window
+            //navigator is part of the Web API - browser makes these available through JS on the browser
+            //checking if the geoloaction property is in navigator
+            if ("geolocation" in window.navigator) {
+                //getCurrentPosition is the API call to the Web API
+                //getCurrentPosition takes two callback functions as arguments (named them for better understanding locationData, error)
+                navigator.geolocation.getCurrentPosition(
+                    (locationData) => {
+                        //success callback from promise
+                        resolve({
+                            lat: locationData.coords.latitude,
+                            lon: locationData.coords.longitude
+                        });
+                    },
+                    (error) => {
+                        //reject callback from promise
+                        reject(error)
+                    }
+                )
+            }
+            else
+            {
+                reject("Location is not available!")
+            }
+        })
+    }
+
+</script>
