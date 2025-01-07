@@ -1,34 +1,45 @@
 @using UtilityBlazorApp.Models
+@using System;
 @inject IJSRuntime JSRuntime
 @inject HttpClient Http
 
+
 <div class="nav">
     <i class="ri-star-smile-fill"></i>
-    <h6>@userDateTime</h6>
+    <h6>@userDate</h6>
+    <img src=@weatherIcon alt="">
     <h6>@userWeather</h6>
 </div>
 
 @code {
 
-    private string userDateTime = "Date and Time Loading!";
+    private string userDate = "Date Loading!";
     private string userWeather = "Weather Loading!";
+    private string weatherIcon = "";
 
     private async Task GetLocalDateTime()
     {
-        userDateTime = await JSRuntime.InvokeAsync<string>("getUserDateTime");
+        string userDateTimeTemp = await JSRuntime.InvokeAsync<string>("getUserDateTime");
+        string[] dateArr = userDateTimeTemp.Split(" ").Take(3).ToArray();
+        userDate = string.Join(" ", dateArr);
         StateHasChanged();
     }
 
     private async Task GetWeather()
     {
-        
-        string apiKey = "f8bb777f33ea63b9d279cc04b0566773";
-        Location location = await JSRuntime.InvokeAsync<Location>("getLocation");
-        string apiURL = $"https://api.openweathermap.org/data/2.5/weather?lat={location.lat}&lon={location.lon}&appid={apiKey}";
 
-        WeatherDetails weatherObj = await Http.GetFromJsonAsync<WeatherDetails>(apiURL);
+        Location location = await JSRuntime.InvokeAsync<Location>("getLocation");
+
+        string apiKey = "f8bb777f33ea63b9d279cc04b0566773";
+        string apiURL = $"https://api.openweathermap.org/data/2.5/weather?lat={location.Lat}&lon={location.Lon}&appid={apiKey}";
+
+        WeatherDetails weatherObj = await Http.GetFromJsonAsync<WeatherDetails>(apiURL) ?? new WeatherDetails();
         
-        userWeather = $"Weather: {weatherObj.Weather?.FirstOrDefault().Main ?? "Unknown"}, Temp: {weatherObj.Main?.Temp}";
+        string weatherIconID = weatherObj.Weather?.FirstOrDefault()?.Icon ?? "Unknown";
+        weatherIcon = $"https://openweathermap.org/img/wn/{weatherIconID}.png";
+
+        userWeather = $"Weather: {weatherObj.Weather?.FirstOrDefault()?.Main ?? "Unknown"}, Temp: {Math.Round((weatherObj.Main?.Temp ?? 0) * 1.8 - 459.67)}F";
+        
         StateHasChanged();
     }
 

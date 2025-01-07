@@ -15,5 +15,7 @@ namespace UtilityBlazorApp.Models
     public class WeatherCondition
     {
         public string? Main { get; set; }
+        public string? Icon { get; set; }
     }
+
 }

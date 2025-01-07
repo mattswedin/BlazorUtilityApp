@@ -2,7 +2,7 @@ namespace UtilityBlazorApp.Models
 {
     public class Location
     {
-        public double lat { get; set; }
-        public double lon { get; set; }
+        public double Lat { get; set; }
+        public double Lon { get; set; }
     }
 }
