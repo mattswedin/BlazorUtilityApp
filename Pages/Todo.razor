@@ -1,38 +1,42 @@
 ﻿@page "/todo"
 
-<h1>Daily To-Do List</h1>
+<div class="component">
 
-<form @onsubmit="AddTask">
-    <h3>Add a Task you want to Complete Today!</h3>
-    <h6>(Double Clicking Removes Task)</h6>
+    <h1>Daily To-Do List</h1>
 
-    <input type="text" @bind="taskInput" placeholder="Task">
-    <button type="submit">Add Task</button>
+    <form @onsubmit="AddTask">
+        <h3>Add a Task you want to Complete Today!</h3>
+        <h6>(Double Clicking Removes Task)</h6>
 
-</form>
+        <input type="text" @bind="taskInput" placeholder="Task">
+        <button type="submit">Add Task</button>
 
-<div> 
-    @if (tasks.Count > 0)
-    {
-        <h3>Today's @(tasks.Count == 1 ? "Task" : "Tasks")</h3>
-        <ul>
-            @foreach (KeyValuePair<string, bool> task in tasks)
-            {
-                <div>
-                    @if (!task.Value)
-                    {
-                        <li @ondblclick="() => RemoveTask(task.Key)">@task.Key</li>
-                        <button @onclick="() => CompleteTask(task.Key)">Complete</button>
-                    }
-                    else
-                    {
-                        <li style="color: rgb(0, 196, 0); font-weight: bold; ">@task.Key <i class="ri-checkbox-circle-fill"></i> </li>    
-                    }
-                </div>
+    </form>
 
-            }
-        </ul>            
-    }
+    <div> 
+        @if (tasks.Count > 0)
+        {
+            <h3>Today's @(tasks.Count == 1 ? "Task" : "Tasks")</h3>
+            <ul>
+                @foreach (KeyValuePair<string, bool> task in tasks)
+                {
+                    <div>
+                        @if (!task.Value)
+                        {
+                            <li @ondblclick="() => RemoveTask(task.Key)">@task.Key</li>
+                            <button @onclick="() => CompleteTask(task.Key)">Complete</button>
+                        }
+                        else
+                        {
+                            <li style="color: rgb(0, 196, 0); font-weight: bold; ">@task.Key <i class="ri-checkbox-circle-fill"></i> </li>    
+                        }
+                    </div>
+
+                }
+            </ul>            
+        }
+    </div>
+
 </div>
 
 @code {
