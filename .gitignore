@@ -15,4 +15,4 @@ obj/
 appsettings.Development.json
 secrets.json
 
-/node_modules
+*/node_modules
